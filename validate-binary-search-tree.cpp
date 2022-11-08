@@ -72,7 +72,7 @@ bool isValidBST(TreeNode *root) {
   Range rootRange = {minValue, maxValue};
   // nodeConstraints[root->val] = &rVals;
   nodeConstraints[root->val] = rootRange;
-  cout << "ROOT: Range for " << root->val << " is " << nodeConstraints[root->val].begin << ".." << nodeConstraints[root->val].end << endl;
+  // cout << "ROOT: Range for " << root->val << " is " << nodeConstraints[root->val].begin << ".." << nodeConstraints[root->val].end << endl;
 
   // Constraint Rules
   //              (Node)
@@ -87,12 +87,12 @@ bool isValidBST(TreeNode *root) {
   while (!nodesQ.empty()) {
     node = nodesQ.front();
     nodeVal = node->val;
-    cout << "Node: " << nodeVal << endl;
+    // cout << "Node: " << nodeVal << endl;
     nodesQ.pop();
     if (node->left != nullptr) {
       nodesQ.push(node->left);
       nodeLeftVal = node->left->val;
-      cout << "\tLeft Child: " << nodeLeftVal;
+      // cout << "\tLeft Child: " << nodeLeftVal;
 
       // check constraints
 
@@ -106,19 +106,18 @@ bool isValidBST(TreeNode *root) {
       minValue = nodeConstraints[nodeVal].begin;
       maxValue = nodeVal;
 
-      cout << " Valid Range: " << minValue << ":" << maxValue;
+      // cout << " Valid Range: " << minValue << ":" << maxValue;
 
       // Checking if this node's value is out of range
       if ((nodeLeftVal < minValue) || (nodeLeftVal > maxValue))
         return false;
 
-      cout << " this node is in valid range. ";
+      // cout << " this node is in valid range. ";
 
       // Set Constraints: Save valid range in map
       Range nodeRange = {minValue, maxValue};
       nodeConstraints[nodeLeftVal] = nodeRange;
-      cout << "Saved Range for node " << nodeLeftVal << " is " << nodeConstraints[nodeLeftVal].begin << ".." << nodeConstraints[nodeLeftVal].end << endl;
-      // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
+      // cout << "Saved Range for node " << nodeLeftVal << " is " << nodeConstraints[nodeLeftVal].begin << ".." << nodeConstraints[nodeLeftVal].end << endl;
     }
 
     // minValue = 0;
@@ -131,7 +130,7 @@ bool isValidBST(TreeNode *root) {
     if (node->right != nullptr) {
       nodesQ.push(node->right);
       nodeRightVal = node->right->val;
-      cout << "\tRight Child: " << nodeRightVal;
+      // cout << "\tRight Child: " << nodeRightVal;
 
       // check constraints
 
@@ -145,24 +144,23 @@ bool isValidBST(TreeNode *root) {
       minValue = nodeVal;
       maxValue = nodeConstraints[nodeVal].end;
 
-      cout << " Valid Range: " << minValue << ":" << maxValue;
+      // cout << " Valid Range: " << minValue << ":" << maxValue;
 
       // Checking if this node's value is out of range
       if ((nodeRightVal < minValue) || (nodeRightVal > maxValue))
         return false;
 
-      cout << " this node is in valid range. ";
+      // cout << " this node is in valid range. ";
 
       // Set Constraints: Save valid range in map
       Range nodeRange = {minValue, maxValue};
       nodeConstraints[nodeRightVal] = nodeRange;
 
-      cout << "Saved Range for node " << nodeRightVal << " is " << nodeConstraints[nodeRightVal].begin << ".." << nodeConstraints[nodeRightVal].end << endl;
-      // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
+      // cout << "Saved Range for node " << nodeRightVal << " is " << nodeConstraints[nodeRightVal].begin << ".." << nodeConstraints[nodeRightVal].end << endl;
     }
   }
 
-  cout << endl;
+  // cout << endl;
 
   return true;
 }
