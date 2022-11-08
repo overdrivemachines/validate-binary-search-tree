@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
   vector<int> input7 = {25, 5, NULL, NULL, 15, 10, 30};
   vector<int> input8 = {25, 5, NULL, NULL, 15, 4, 20};
 
-  TreeNode *root = createTree(input6);
+  TreeNode *root = createTree(input7);
   bool result = isValidBST(root);
   if (result) {
     cout << "**Valid** Binary Search Tree\n";
@@ -43,7 +43,7 @@ int main(int argc, char const *argv[]) {
 
 bool isValidBST(TreeNode *root) {
   // Every node has 2 constraints: min value and max value that is dependant on the parent node
-  map<int, int *> nodeConstraints;
+  map<int, int(*)[2]> nodeConstraints;
   queue<TreeNode *> nodesQ;
   TreeNode *node;                                  // Used for traversal
   int minValue = std::numeric_limits<int>::min();  // Minimum value for a Node
@@ -65,10 +65,9 @@ bool isValidBST(TreeNode *root) {
   // add the root node to the queue
   nodesQ.push(root);
   // set min and max for the root node
-  nodeConstraints[root->val] = new int[2];
-  nodeConstraints[root->val][0] = minValue;
-  nodeConstraints[root->val][1] = maxValue;
-  cout << "ROOT: Range for " << root->val << " is " << nodeConstraints[root->val][0] << ".." << nodeConstraints[root->val][1] << endl;
+  int rVals[2] = {minValue, maxValue};
+  nodeConstraints[root->val] = &rVals;
+  cout << "ROOT: Range for " << root->val << " is " << *(nodeConstraints[root->val])[0] << ".." << *(nodeConstraints[root->val])[1] << endl;
 
   // Constraint Rules
   //              (Node)
@@ -99,19 +98,30 @@ bool isValidBST(TreeNode *root) {
 
       // Computing min and max vals of this child node
       // Range: [Min: node's min, Max: node's val]. node refer's to the parent of this child node
-      minValue = nodeConstraints[nodeVal][0];
+      minValue = *(nodeConstraints[nodeVal])[0];
       maxValue = nodeVal;
 
-      cout << " Valid Range: " << minValue << ":" << maxValue << endl;
+      cout << " Valid Range: " << minValue << ":" << maxValue;
 
       // Checking if this node's value is out of range
       if ((nodeLeftVal < minValue) || (nodeLeftVal > maxValue))
         return false;
 
+      cout << " this node is in valid range. ";
+
       // Set Constraints: Save valid range in map
       int vals[2] = {minValue, maxValue};
-      nodeConstraints[nodeLeftVal] = vals;
+      nodeConstraints[nodeLeftVal] = &vals;
+      cout << "Saved Range for node " << nodeLeftVal << " is " << *(nodeConstraints[nodeLeftVal])[0] << ".." << *(nodeConstraints[nodeLeftVal])[1] << endl;
+      // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
     }
+
+    // minValue = 0;
+    // maxValue = 0;
+    // nodeLeftVal = 0;
+    // nodeRightVal = 0;
+
+    // cout << "\t->Range for parent node " << nodeVal << " is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
 
     if (node->right != nullptr) {
       nodesQ.push(node->right);
@@ -128,17 +138,22 @@ bool isValidBST(TreeNode *root) {
       // Computing min and max vals of this child node
       // Range: [Min: node's val, Max: node's max]. node refer's to the parent of this child node
       minValue = nodeVal;
-      maxValue = nodeConstraints[nodeVal][1];
+      maxValue = *(nodeConstraints[nodeVal])[1];
 
-      cout << " Valid Range: " << minValue << ":" << maxValue << endl;
+      cout << " Valid Range: " << minValue << ":" << maxValue;
 
       // Checking if this node's value is out of range
       if ((nodeRightVal < minValue) || (nodeRightVal > maxValue))
         return false;
 
+      cout << " this node is in valid range. ";
+
       // Set Constraints: Save valid range in map
       int vals[2] = {minValue, maxValue};
-      nodeConstraints[nodeRightVal] = vals;
+      nodeConstraints[nodeRightVal] = &vals;
+
+      cout << "Saved Range for node " << nodeRightVal << " is " << *(nodeConstraints[nodeRightVal])[0] << ".." << *(nodeConstraints[nodeRightVal])[1] << endl;
+      // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
     }
   }
 
