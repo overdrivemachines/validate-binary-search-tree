@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <map>
 #include <queue>
 #include <vector>
@@ -37,11 +38,14 @@ int main(int argc, char const *argv[]) {
 
 bool isValidBST(TreeNode *root) {
   // Every node has 2 constraints: min value and max value that is dependant on the parent node
-  map<int, int[2]> nodeConstraint;
-
+  map<int, int *> nodeConstraints;
   queue<TreeNode *> nodesQ;
-
-  TreeNode *node;  // used for traversal
+  TreeNode *node;                                  // Used for traversal
+  int minValue = std::numeric_limits<int>::min();  // Minimum value for a Node
+  int maxValue = std::numeric_limits<int>::max();  // Maximum value for a Node
+  int nodeLeftVal;                                 // Value of Left child Node
+  int nodeRightVal;                                // Value of Right child Node
+  int nodeVal;                                     // Value of Node
 
   // edge cases
 
@@ -53,19 +57,60 @@ bool isValidBST(TreeNode *root) {
   if ((root->left == nullptr) && (root->right == nullptr))
     return true;
 
+  // add the root node to the queue
   nodesQ.push(root);
+  // set min and max for the root node
+  nodeConstraints[root->val] = new int[2];
+  nodeConstraints[root->val][0] = minValue;
+  nodeConstraints[root->val][1] = maxValue;
+  cout << "ROOT: Range for " << root->val << " is " << nodeConstraints[root->val][0] << ".." << nodeConstraints[root->val][1] << endl;
+
+  // Constraint Rules
+  //              (Node)
+  //              /    \
+  //   (Left Child)    (Right Child)
+  //
+  //  Left Child: [Min: node's min, Max: node's val]
+  //  Right Child: [Min: node's val, Max: node's max]
+
   // traverse the binary tree
 
   while (!nodesQ.empty()) {
     node = nodesQ.front();
-    cout << node->val << " ";
+    nodeVal = node->val;
+    cout << "Node: " << nodeVal << endl;
     nodesQ.pop();
     if (node->left != nullptr) {
       nodesQ.push(node->left);
+      nodeLeftVal = node->left->val;
+      cout << "\tNode Left: " << nodeLeftVal << endl;
+
+      // check constraints
+
+      // if node already exists in map
+      if (nodeConstraints.count(nodeLeftVal))
+        return false;
+
+      // if (nodeLeftVal > nodeConstraints[])
+
+      // Set constraints
+
+      // add constraints
+      // nodeConstraints[] = new int[2];
     }
 
     if (node->right != nullptr) {
       nodesQ.push(node->right);
+      nodeRightVal = node->right->val;
+      cout << "\tNode Right: " << nodeRightVal << endl;
+
+      // check constraints
+
+      // if node already exists in map
+      if (nodeConstraints.count(nodeRightVal))
+        return false;
+
+      // add constraints
     }
   }
 
