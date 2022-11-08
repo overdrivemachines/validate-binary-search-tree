@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
   vector<int> input7 = {25, 5, NULL, NULL, 15, 10, 30};
   vector<int> input8 = {25, 5, NULL, NULL, 15, 4, 20};
 
-  TreeNode *root = createTree(input7);
+  TreeNode *root = createTree(input8);
   bool result = isValidBST(root);
   if (result) {
     cout << "**Valid** Binary Search Tree\n";
@@ -42,8 +42,12 @@ int main(int argc, char const *argv[]) {
 }
 
 bool isValidBST(TreeNode *root) {
+  struct Range {
+    int begin;
+    int end;
+  };
   // Every node has 2 constraints: min value and max value that is dependant on the parent node
-  map<int, int(*)[2]> nodeConstraints;
+  map<int, Range> nodeConstraints;
   queue<TreeNode *> nodesQ;
   TreeNode *node;                                  // Used for traversal
   int minValue = std::numeric_limits<int>::min();  // Minimum value for a Node
@@ -65,9 +69,10 @@ bool isValidBST(TreeNode *root) {
   // add the root node to the queue
   nodesQ.push(root);
   // set min and max for the root node
-  int rVals[2] = {minValue, maxValue};
-  nodeConstraints[root->val] = &rVals;
-  cout << "ROOT: Range for " << root->val << " is " << *(nodeConstraints[root->val])[0] << ".." << *(nodeConstraints[root->val])[1] << endl;
+  Range rootRange = {minValue, maxValue};
+  // nodeConstraints[root->val] = &rVals;
+  nodeConstraints[root->val] = rootRange;
+  cout << "ROOT: Range for " << root->val << " is " << nodeConstraints[root->val].begin << ".." << nodeConstraints[root->val].end << endl;
 
   // Constraint Rules
   //              (Node)
@@ -98,7 +103,7 @@ bool isValidBST(TreeNode *root) {
 
       // Computing min and max vals of this child node
       // Range: [Min: node's min, Max: node's val]. node refer's to the parent of this child node
-      minValue = *(nodeConstraints[nodeVal])[0];
+      minValue = nodeConstraints[nodeVal].begin;
       maxValue = nodeVal;
 
       cout << " Valid Range: " << minValue << ":" << maxValue;
@@ -110,9 +115,9 @@ bool isValidBST(TreeNode *root) {
       cout << " this node is in valid range. ";
 
       // Set Constraints: Save valid range in map
-      int vals[2] = {minValue, maxValue};
-      nodeConstraints[nodeLeftVal] = &vals;
-      cout << "Saved Range for node " << nodeLeftVal << " is " << *(nodeConstraints[nodeLeftVal])[0] << ".." << *(nodeConstraints[nodeLeftVal])[1] << endl;
+      Range nodeRange = {minValue, maxValue};
+      nodeConstraints[nodeLeftVal] = nodeRange;
+      cout << "Saved Range for node " << nodeLeftVal << " is " << nodeConstraints[nodeLeftVal].begin << ".." << nodeConstraints[nodeLeftVal].end << endl;
       // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
     }
 
@@ -138,7 +143,7 @@ bool isValidBST(TreeNode *root) {
       // Computing min and max vals of this child node
       // Range: [Min: node's val, Max: node's max]. node refer's to the parent of this child node
       minValue = nodeVal;
-      maxValue = *(nodeConstraints[nodeVal])[1];
+      maxValue = nodeConstraints[nodeVal].end;
 
       cout << " Valid Range: " << minValue << ":" << maxValue;
 
@@ -149,10 +154,10 @@ bool isValidBST(TreeNode *root) {
       cout << " this node is in valid range. ";
 
       // Set Constraints: Save valid range in map
-      int vals[2] = {minValue, maxValue};
-      nodeConstraints[nodeRightVal] = &vals;
+      Range nodeRange = {minValue, maxValue};
+      nodeConstraints[nodeRightVal] = nodeRange;
 
-      cout << "Saved Range for node " << nodeRightVal << " is " << *(nodeConstraints[nodeRightVal])[0] << ".." << *(nodeConstraints[nodeRightVal])[1] << endl;
+      cout << "Saved Range for node " << nodeRightVal << " is " << nodeConstraints[nodeRightVal].begin << ".." << nodeConstraints[nodeRightVal].end << endl;
       // cout << "***Node " << nodeVal << " range is " << nodeConstraints[nodeVal][0] << ".." << nodeConstraints[nodeVal][1] << endl;
     }
   }
