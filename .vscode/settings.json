@@ -1,6 +1,7 @@
 {
   "files.associations": {
     "*.html.erb": "erb",
-    "new": "cpp"
+    "new": "cpp",
+    "iostream": "cpp"
   }
 }

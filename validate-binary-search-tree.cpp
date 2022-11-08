@@ -30,8 +30,13 @@ int main(int argc, char const *argv[]) {
   vector<int> input7 = {25, 5, NULL, NULL, 15, 10, 30};
   vector<int> input8 = {25, 5, NULL, NULL, 15, 4, 20};
 
-  TreeNode *root = createTree(input1);
-  isValidBST(root);
+  TreeNode *root = createTree(input3);
+  bool result = isValidBST(root);
+  if (result) {
+    cout << "**Valid** Binary Search Tree\n";
+  } else {
+    cout << "**Invalid** Binary Search Tree\n";
+  }
 
   return 0;
 }
@@ -83,26 +88,35 @@ bool isValidBST(TreeNode *root) {
     if (node->left != nullptr) {
       nodesQ.push(node->left);
       nodeLeftVal = node->left->val;
-      cout << "\tNode Left: " << nodeLeftVal << endl;
+      cout << "\tLeft Child: " << nodeLeftVal;
 
       // check constraints
 
-      // if node already exists in map
+      // if this child node already exists in map,
+      // this is not a valid binary search tree
       if (nodeConstraints.count(nodeLeftVal))
         return false;
 
-      // if (nodeLeftVal > nodeConstraints[])
+      // Computing min and max vals of this child node
+      // Range: [Min: node's min, Max: node's val]. node refer's to the parent of this child node
+      minValue = nodeConstraints[nodeVal][0];
+      maxValue = nodeVal;
 
-      // Set constraints
+      cout << " Valid Range: " << minValue << ":" << maxValue << endl;
 
-      // add constraints
-      // nodeConstraints[] = new int[2];
+      // Checking if this node's value is out of range
+      if ((nodeLeftVal < minValue) || (nodeLeftVal > maxValue))
+        return false;
+
+      // Set Constraints: Save valid range in map
+      int vals[2] = {minValue, maxValue};
+      nodeConstraints[nodeLeftVal] = vals;
     }
 
     if (node->right != nullptr) {
       nodesQ.push(node->right);
       nodeRightVal = node->right->val;
-      cout << "\tNode Right: " << nodeRightVal << endl;
+      cout << "\tRight Child: " << nodeRightVal << endl;
 
       // check constraints
 
